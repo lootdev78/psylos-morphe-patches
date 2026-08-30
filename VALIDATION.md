@@ -80,3 +80,11 @@ Run the repository-only validation with:
 ```bash
 python3 tools/validate_repo.py
 ```
+
+## Shared extension runtime fix
+
+The SoundCloud extension patch uses Morphe's `sharedExtensionPatch(...)`. That helper loads
+`extensions/shared.mpe` before `extensions/soundcloud.mpe`. The repository therefore includes
+`extensions/shared` as a common runtime module. It is not an additional app target. Its nested
+library packages `morphe-extensions-library`, which provides the `app.morphe.extension.shared.*`
+classes used by the Psylos SoundCloud settings extension.

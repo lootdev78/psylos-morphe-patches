@@ -22,6 +22,11 @@ required = [
     ".github/workflows/build_pull_request.yml",
     "patches/build.gradle.kts",
     "settings.gradle.kts",
+    "extensions/shared/build.gradle.kts",
+    "extensions/shared/library/build.gradle.kts",
+    "extensions/shared/src/main/AndroidManifest.xml",
+    "extensions/soundcloud/build.gradle.kts",
+    "tools/verify_mpp.sh",
 ]
 for rel in required:
     if not (ROOT / rel).is_file():
@@ -55,6 +60,27 @@ try:
 except Exception as exc:
     errors.append(f"Invalid patches-list.json: {exc}")
 
+
+# sharedExtensionPatch() always merges extensions/shared.mpe before app-specific MPEs.
+# The shared module is therefore mandatory even in a SoundCloud-only repository.
+ext_patch = ROOT / "patches/src/main/kotlin/hoodles/morphe/patches/soundcloud/shared/ExtensionPatch.kt"
+if ext_patch.is_file():
+    ext_text = ext_patch.read_text(encoding="utf-8", errors="replace")
+    if "sharedExtensionPatch" in ext_text and not (ROOT / "extensions/shared/build.gradle.kts").is_file():
+        errors.append("SoundCloud uses sharedExtensionPatch but extensions/shared is missing")
+
+shared_build = ROOT / "extensions/shared/build.gradle.kts"
+if shared_build.is_file():
+    shared_text = shared_build.read_text(encoding="utf-8", errors="replace")
+    if 'implementation(project(":extensions:shared:library"))' not in shared_text:
+        errors.append("extensions/shared does not package the shared runtime library")
+
+shared_library_build = ROOT / "extensions/shared/library/build.gradle.kts"
+if shared_library_build.is_file():
+    shared_lib_text = shared_library_build.read_text(encoding="utf-8", errors="replace")
+    if "implementation(libs.morphe.extensions.library)" not in shared_lib_text:
+        errors.append("extensions/shared:library does not package Morphe extension runtime classes")
+
 # The source tree itself is intentionally SoundCloud-only.
 source_root = ROOT / "patches/src/main/kotlin"
 packages = set()
@@ -86,11 +112,24 @@ for needle in [
     if needle not in release:
         errors.append(f"Release workflow missing: {needle}")
 
+
+for workflow_rel in [
+    ".github/workflows/build_pull_request.yml",
+    ".github/workflows/release.yml",
+]:
+    workflow_text = (ROOT / workflow_rel).read_text(encoding="utf-8", errors="replace")
+    if "buildAndroid" not in workflow_text:
+        errors.append(f"{workflow_rel} does not build the Android MPP")
+    if "verify_mpp.sh" not in workflow_text:
+        errors.append(f"{workflow_rel} does not verify bundled runtime extensions")
+
 releaserc = (ROOT / ".releaserc").read_text(encoding="utf-8", errors="replace")
 if "./gradlew codegen" in releaserc:
     errors.append(".releaserc still calls removed codegen task")
 if "generatePatchesList" not in releaserc:
     errors.append(".releaserc does not generate patches-list.json")
+if "verify_mpp.sh" not in releaserc:
+    errors.append(".releaserc does not validate bundled runtime extensions before release")
 
 if errors:
     print("Repository validation failed:", file=sys.stderr)

@@ -33,7 +33,7 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "./gradlew generatePatchesList && jq '.version=\"${nextRelease.version}\"' patches-list.json > patches-list.json.tmp && mv patches-list.json.tmp patches-list.json"
+        "prepareCmd": "./gradlew generatePatchesList && ./tools/verify_mpp.sh && jq '.version=\"${nextRelease.version}\"' patches-list.json > patches-list.json.tmp && mv patches-list.json.tmp patches-list.json"
       }
     ],
     [

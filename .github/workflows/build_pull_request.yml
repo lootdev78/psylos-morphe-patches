@@ -33,4 +33,7 @@ jobs:
       - name: Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build --no-daemon
+        run: ./gradlew buildAndroid --no-daemon
+
+      - name: Verify bundled runtime extensions
+        run: ./tools/verify_mpp.sh
