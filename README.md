@@ -1,36 +1,53 @@
-# Psylos SoundCloud Patches
+# Psylos Morphe Patches
 
-A SoundCloud-only patch set for use with Morphe.
+SoundCloud-only patches for use with Morphe.
 
-## Compatibility
+## About
 
-- App: SoundCloud (`com.soundcloud.android`)
-- Verified target: `2026.08.26-release`
+This repository is intentionally restricted to `com.soundcloud.android`.
 
-## Patches
+Private patches by Psylos:
+- Download button hook
+- Hide cast icon
 
-### Private Psylos patches
+SoundCloud patches retained from `hoo-dles/morphe-patches` keep their original source credits in the corresponding source files.
 
-- **Download button hook** — reproduces the workflow from the supplied Morphed SoundCloud APK. When enabled in the in-app Psylos settings, public `soundcloud.com` page links are routed with Android `ACTION_SEND` to a user-configured package. The patch does not include a downloader or media-decryption logic.
-- **Hide cast icon** — adds a setting that hides SoundCloud's cast `MenuItem` and `ThemeableMediaRouteButton`.
+## How to use these patches
 
-The in-app settings entry contains only settings for the private patches that were actually selected during patching. No bottom-navigation, upload, inbox, notification, home-section, or other hide/navigation options from the supplied APK are included.
+After you create the GitHub repository, replace `YOUR_GITHUB_USERNAME` where needed and add the repository as a Morphe patch source:
 
-### Retained upstream SoundCloud patches
+`https://github.com/YOUR_GITHUB_USERNAME/psylos-morphe-patches`
 
-- **Disable telemetry** — original Hoo-dles patch, copyright header retained in source.
-- **AMOLED dark theme** — original Hoo-dles patch, copyright header retained in source.
+Morphe deeplink:
 
-The subscription/paywall-unlock patch from the source archive is not included in this scoped build.
+`https://morphe.software/add-source?github=YOUR_GITHUB_USERNAME/psylos-morphe-patches`
 
-## Credits and licensing
+## Patches list
 
-See `CREDITS.md`, `LICENSE`, and `NOTICE`. The project name is intentionally distinct from Morphe because the included Section 7 notice permits Morphe only as a descriptive compatibility reference for derivative works.
+<!-- PATCHES_START EXPANDED -->
 
-## Build
+#### The patch list is generated automatically by the release workflow.
 
-Use the included Gradle wrapper in an environment with access to the configured Gradle distribution and Morphe package registry dependencies:
+<!-- PATCHES_END -->
 
-```sh
-./gradlew build
-```
+## Development / releases
+
+- Work on the `dev` branch.
+- Build locally with `./gradlew buildAndroid`.
+- The bundle is written to `patches/build/libs/patches-*.mpp`.
+- Use semantic commits such as `feat:`, `fix:` and `chore:`.
+- Merge `dev` into `main` without squashing for a stable release.
+- Do not manually create GitHub releases; `.github/workflows/release.yml` and semantic-release update the generated release metadata.
+- `patches-list.json`, `patches-bundle.json` and `CHANGELOG.md` are release-generated files.
+
+## GitHub setup
+
+Enable **Settings > Actions > General > Workflow permissions > Allow GitHub Actions to create and approve pull requests** so the `dev` -> `main` workflow can create its pull request.
+
+## Credits
+
+See [CREDITS.md](CREDITS.md). Existing upstream copyright notices are preserved in source files.
+
+## License
+
+GPLv3. See [LICENSE](LICENSE) and [NOTICE](NOTICE).

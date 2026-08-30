@@ -24,12 +24,6 @@
         }
       }
     ],
-    [
-      "@semantic-release/exec",
-      {
-        "prepareCmd": "./gradlew codegen"
-      }
-    ],
     "gradle-semantic-release-plugin",
     [
       "@semantic-release/exec",

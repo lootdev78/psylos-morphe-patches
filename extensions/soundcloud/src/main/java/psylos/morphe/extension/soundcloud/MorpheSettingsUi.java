@@ -74,7 +74,7 @@ public final class MorpheSettingsUi {
         scroll.addView(content);
 
         new AlertDialog.Builder(activity)
-                .setTitle("Psylos SoundCloud Patches")
+                .setTitle("Psylos Morphe Patches")
                 .setView(scroll)
                 .setPositiveButton("Speichern", (dialog, which) -> {
                     if (downloadEnabled != null && packageInput != null) {

@@ -15,7 +15,7 @@ public final class MorpheSettingsCompose {
     public static void render(Composer composer) {
         Integer chevron = Integer.valueOf(ResourceUtils.getDrawableIdentifier("ic_actions_chevron_right"));
         ActionListItemKt.a(
-                "Psylos SoundCloud Patches",
+                "Psylos Morphe Patches",
                 new OpenClick(),
                 null,
                 false,

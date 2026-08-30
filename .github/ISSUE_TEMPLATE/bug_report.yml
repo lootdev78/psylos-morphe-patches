@@ -1,0 +1,28 @@
+name: Bug report
+description: Report a problem with a SoundCloud patch.
+title: 'fix(SoundCloud): '
+labels: ['bug']
+body:
+  - type: input
+    attributes:
+      label: SoundCloud version
+      placeholder: '2026.08.26-release'
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Morphe version
+      placeholder: 'Manager or Desktop/CLI version'
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Problem
+      description: Describe the issue and steps to reproduce it.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Patch log
+      description: Paste the relevant patch/build log if available.
+      render: shell

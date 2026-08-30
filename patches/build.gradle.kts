@@ -1,13 +1,15 @@
-group = "psylos.soundcloud"
+val repositorySlug = System.getenv("GITHUB_REPOSITORY") ?: "YOUR_GITHUB_USERNAME/psylos-morphe-patches"
+
+group = "psylos.morphe"
 
 patches {
     about {
-        name = "Psylos SoundCloud Patches"
+        name = "Psylos Morphe Patches"
         description = "SoundCloud-only patches for use with Morphe"
-        source = "local/private"
+        source = "https://github.com/$repositorySlug"
         author = "Psylos"
         contact = "na"
-        website = "https://morphe.software"
+        website = "https://github.com/$repositorySlug"
         license = "GPLv3"
     }
 }

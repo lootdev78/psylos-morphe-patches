@@ -1,0 +1,17 @@
+name: SoundCloud enhancement
+description: Request an improvement to an existing SoundCloud patch.
+title: 'feat(SoundCloud): '
+labels: ['enhancement']
+body:
+  - type: textarea
+    attributes:
+      label: Feature description
+      description: This repository is SoundCloud-only. Describe the requested SoundCloud patch improvement.
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Scope
+      options:
+        - label: This request is only for SoundCloud (`com.soundcloud.android`).
+          required: true

@@ -1,5 +1,5 @@
 /**
- * Private SoundCloud patches for Psylos SoundCloud Patches.
+ * Private SoundCloud patches for Psylos Morphe Patches.
  */
 package psylos.morphe.extension.soundcloud;
 

@@ -1,22 +1,24 @@
 # Validation
 
-Target inspected from the supplied APK:
+## Repository / Morphe source structure
 
-- Package: `com.soundcloud.android`
-- Version: `2026.08.26-release`
-- Version code: `369070`
+Validated locally:
 
-Checks performed for this scoped source tree:
+- `.github/workflows/build_pull_request.yml` present and YAML-valid.
+- `.github/workflows/open_pull_request.yml` present and YAML-valid.
+- `.github/workflows/release.yml` present and YAML-valid.
+- `.github/dependabot.yml` present and YAML-valid.
+- `patches-list.json` present and valid JSON, initialized as the Morphe template placeholder (`0.0.0`, empty list) until semantic release generates the first release metadata.
+- `patches-bundle.json` present and valid JSON with the standard initial empty fields.
+- `gradle.properties` uses the semantic-release baseline `version = 1.0.0`.
+- project identity is `Psylos Morphe Patches` / `psylos-morphe-patches`.
+- the release metadata source resolves from GitHub Actions' `GITHUB_REPOSITORY`; the local fallback is `YOUR_GITHUB_USERNAME/psylos-morphe-patches`.
+- only `com.soundcloud.android` is declared as an app compatibility target.
+- only SoundCloud patch source namespaces are present under `patches/src/main/kotlin/psylos/morphe/patches/soundcloud`.
+- no unrelated app-request discussion template is included.
 
-- Decompiled the supplied APK with the supplied apktool 3.0.3.
-- Matched all 14 target class/method groups used by the private Download button hook, Hide cast icon, and settings integration against the supplied APK.
-- Verified the reconstructed Download button hook workflow covers track and playlist URL caching, track/playlist bottom-sheet actions, details-page actions, download-state normalization, library Downloads-row visibility, and native Offline Listening settings visibility.
-- Verified the Hide cast icon workflow covers both the `MenuItem` and view-backed cast button paths in `DefaultCastButtonInstaller`.
-- Verified unwanted bottom-navigation, upload, inbox, notification, home-section, and other Morphed hide/navigation settings are absent from the new Psylos private patch/extension sources.
-- Verified the only app compatibility declaration in the patch source is SoundCloud (`com.soundcloud.android`).
-- Compiled the new Kotlin patch sources against local API/dexlib compile stubs successfully.
-- Compiled the new Java extension sources against local Android/Morphe/SoundCloud compile stubs successfully.
+## Build validation
 
-## Full Gradle build limitation
+A real `./gradlew :patches:buildAndroid` was attempted. The build could not start in this isolated environment because Gradle Wrapper needs to fetch `gradle-9.7.1-bin.zip` from `services.gradle.org`, and DNS/network access to that host is unavailable here.
 
-A full `./gradlew build` could not be completed in this sandbox because the Gradle wrapper distribution host (`services.gradle.org`) could not be resolved from the network-isolated environment. This is an environment/dependency-fetch limitation, so the final repository has not been claimed as fully Gradle-built here.
+GitHub Actions or Termux with network access can perform the real Gradle build using the included workflows.

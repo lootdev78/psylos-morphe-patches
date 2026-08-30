@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0-private
+## 1.0.0
 
 - Scoped the repository to SoundCloud only.
 - Added private Psylos Download button hook workflow from the supplied APK.

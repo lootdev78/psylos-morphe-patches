@@ -1,4 +1,4 @@
-rootProject.name = "psylos-soundcloud-patches"
+rootProject.name = "psylos-morphe-patches"
 
 pluginManagement {
     repositories {
