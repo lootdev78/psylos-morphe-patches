@@ -1,3 +1,10 @@
+# 1.0.0 (2026-08-30)
+
+
+### Bug Fixes
+
+* make Gradle wrapper executable ([5788080](https://github.com/lootdev78/psylos-morphe-patches/commit/57880809e4e2f9494f39a84de9e7568abbf07d02))
+
 # Changelog
 
 ## 1.0.0
