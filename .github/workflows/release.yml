@@ -22,23 +22,27 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v6.0.0
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: '21'
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
           node-version: 'lts/*'
-          cache: 'npm'
+          cache: npm
 
-      - name: Install dependencies
-        run: npm install
-        
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Make Gradle wrapper executable
         run: chmod +x gradlew
 
-      # Semantic release runs its own Gradle build command.
-      # Only dev and main branch will generate a release as specified by .releaserc
+      - name: Validate repository structure
+        run: python3 tools/validate_repo.py
+
+      - name: Install release dependencies
+        run: npm ci
+
       - name: Release
         uses: cycjimmy/semantic-release-action@v6
         id: release
@@ -52,10 +56,8 @@ jobs:
           subject-name: 'Psylos Morphe Patches ${{ steps.release.outputs.new_release_git_tag }}'
           subject-path: patches/build/libs/patches-*.mpp
 
-      # Always verify compilation when semantic-release did not publish a release.
-      # This covers non-main/dev branches, chore commits, docs commits, etc.
       - name: Verify project compiles
         if: steps.release.outputs.new_release_published != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew :patches:buildAndroid clean --no-daemon
+        run: ./gradlew build --no-daemon

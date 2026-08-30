@@ -1,4 +1,6 @@
-val repositorySlug = System.getenv("GITHUB_REPOSITORY") ?: "YOUR_GITHUB_USERNAME/psylos-morphe-patches"
+val repositorySlug = System.getenv("GITHUB_REPOSITORY")
+    ?.takeIf { it.isNotBlank() }
+    ?: "lootdev78/psylos-morphe-patches"
 
 group = "psylos.morphe"
 
@@ -8,7 +10,7 @@ patches {
         description = "SoundCloud-only patches for use with Morphe"
         source = "https://github.com/$repositorySlug"
         author = "Psylos"
-        contact = "na"
+        contact = "https://github.com/lootdev78"
         website = "https://github.com/$repositorySlug"
         license = "GPLv3"
     }
@@ -29,20 +31,12 @@ repositories {
 }
 
 dependencies {
-    // Used by JsonGenerator.
+    // Needed at runtime by the patch list generator.
     implementation(libs.gson)
-    // Required due to smali, or build fails. Can be removed once smali is bumped.
+
+    // Required by the current smali dependency graph.
     implementation(libs.guava)
     implementation(libs.morphe.patches.library)
-
-    // Used to read exported symbol from ELF libraries
-    implementation(libs.jelf)
-
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.native.lib.loader) {
-        // bundled version clashes with newer runtime dependency
-        exclude(group = "org.slf4j", module = "slf4j-api")
-    }
 
     compileOnly(project(":patches:stub"))
     compileOnly(libs.android.all)
@@ -52,12 +46,11 @@ dependencies {
 tasks {
     register<JavaExec>("generatePatchesList") {
         description = "Build patch with patch list"
-
         dependsOn(build)
-
         classpath = sourceSets["main"].runtimeClasspath
         mainClass.set("app.morphe.util.PatchListGeneratorKt")
     }
+
     // Used by gradle-semantic-release-plugin.
     publish {
         dependsOn("generatePatchesList")
@@ -69,15 +62,10 @@ kotlin {
         freeCompilerArgs = listOf("-Xcontext-parameters")
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
-
     jvmToolchain(17)
 }
 
 java {
     targetCompatibility = JavaVersion.VERSION_17
     sourceCompatibility = JavaVersion.VERSION_17
-}
-
-plugins {
-    kotlin("plugin.serialization") version "2.4.10"
 }

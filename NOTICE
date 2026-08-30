@@ -20,3 +20,34 @@ References to Morphe are permitted solely for descriptive compatibility purposes
 - Are accurate, factual, and non-misleading;
 - Do not suggest authorship by the Morphe project; and
 - Appear only in a secondary or descriptive context, not as part of the product or project name.
+
+Psylos derivative notice
+========================
+
+Project identity: Psylos Morphe Patches
+Compatibility description: patches for use with Morphe
+
+Private Psylos work
+-------------------
+
+Copyright 2026 Psylos.
+
+The following reconstructed workflows and supporting integration code are identified as Psylos private patches:
+
+- Download button hook
+- Hide Cast icon
+- The limited settings UI/status integration used by those two patches
+
+Inherited work and retained credits
+-----------------------------------
+
+The following existing SoundCloud patches and their extension code remain credited to Hoo-dles in their original source headers:
+
+- Enable SoundCloud Go
+- AMOLED dark theme
+- Disable telemetry
+
+Upstream project credited by those headers:
+https://github.com/hoo-dles/morphe-patches
+
+The shared extension mechanism and patch APIs are provided by or derived from the Morphe project. References to Morphe in this derivative are descriptive compatibility references only.

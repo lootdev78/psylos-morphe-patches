@@ -2,7 +2,7 @@ plugins {
     `java-library`
 }
 
-description = "Provide Android API stubs for Morphe Patches."
+description = "Provide Android API stubs for the SoundCloud patch build."
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17

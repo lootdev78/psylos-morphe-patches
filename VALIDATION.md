@@ -1,24 +1,82 @@
-# Validation
+# Validation report
 
-## Repository / Morphe source structure
+Validation was performed against the supplied `Morphed_SOUNDCLOUD.apk` and the exact target declared by the patches: SoundCloud `2026.08.26-release` (`versionCode 369070`).
 
-Validated locally:
+## Completed checks
 
-- `.github/workflows/build_pull_request.yml` present and YAML-valid.
-- `.github/workflows/open_pull_request.yml` present and YAML-valid.
-- `.github/workflows/release.yml` present and YAML-valid.
-- `.github/dependabot.yml` present and YAML-valid.
-- `patches-list.json` present and valid JSON, initialized as the Morphe template placeholder (`0.0.0`, empty list) until semantic release generates the first release metadata.
-- `patches-bundle.json` present and valid JSON with the standard initial empty fields.
-- `gradle.properties` uses the semantic-release baseline `version = 1.0.0`.
-- project identity is `Psylos Morphe Patches` / `psylos-morphe-patches`.
-- the release metadata source resolves from GitHub Actions' `GITHUB_REPOSITORY`; the local fallback is `YOUR_GITHUB_USERNAME/psylos-morphe-patches`.
-- only `com.soundcloud.android` is declared as an app compatibility target.
-- only SoundCloud patch source namespaces are present under `patches/src/main/kotlin/psylos/morphe/patches/soundcloud`.
-- no unrelated app-request discussion template is included.
+### 1. APK decompile and reassembly
 
-## Build validation
+The supplied APK was decompiled and its apktool project was rebuilt with the supplied `apktool_3.0.3.jar`.
 
-A real `./gradlew :patches:buildAndroid` was attempted. The build could not start in this isolated environment because Gradle Wrapper needs to fetch `gradle-9.7.1-bin.zip` from `services.gradle.org`, and DNS/network access to that host is unavailable here.
+Result: **passed**. All ten smali/dex trees and Android resources assembled into an unsigned APK without an apktool error.
 
-GitHub Actions or Termux with network access can perform the real Gradle build using the included workflows.
+### 2. Reconstructed extension source
+
+All Java sources under `extensions/soundcloud/src/main/java` were compiled with `javac --release 17 -Xlint:all` against the project compile-only SoundCloud/Compose stubs and minimal validation-only Android/Morphe stubs.
+
+Result: **passed** for 8 project Java source files, producing 46 validation class files. The only compiler warning came from a validation-only exception stub lacking `serialVersionUID`; it is not part of this repository.
+
+### 3. Patch source
+
+All Kotlin files under `patches/src/main/kotlin` were compiled with JVM target 17 against validation-only API stubs matching the Morphe/dexlib symbols used by this repository.
+
+Result: **passed** for all 14 project Kotlin source files. Reported warnings concerned unused parameters in validation-only stubs, not project sources.
+
+### 4. Fingerprints and bytecode anchors
+
+`tools/validate_reconstruction.py` checked the exact target classes, method signatures, and required smali anchors in the supplied apktool tree.
+
+Result: **passed** for 14 target methods, including settings insertion, track/playlist URL capture, all download click paths, download-state normalization, native Downloads suppression, and both Cast-button implementations.
+
+Run the same check with:
+
+```bash
+./tools/validate_reconstruction.py /absolute/path/to/decompiled-soundcloud
+```
+
+### 5. Scope isolation
+
+Static checks confirmed:
+
+- only `com.soundcloud.android` is declared as an app target;
+- only the `extensions/soundcloud` app extension remains;
+- the private source trees contain none of the excluded Home, upload, inbox, notification, Create-button, bottom-navigation, or icon-only-navigation workflows;
+- the two private patches are separate, opt-in bytecode patches and share one conditional settings injection.
+
+Result: **passed**.
+
+## Full Gradle bundle build
+
+Command attempted:
+
+```bash
+./gradlew --no-daemon :patches:build
+```
+
+The wrapper could not start because this execution environment could not resolve `services.gradle.org` while fetching `gradle-9.7.1-bin.zip` (`java.net.UnknownHostException`). Therefore, the final Gradle bundle task and dependency resolution could not be completed here.
+
+This is an environment/network limitation rather than a source compiler or apktool failure. Run the command above in a connected environment with access to the configured repositories and, when required, GitHub Packages credentials.
+
+## Verification boundary
+
+These checks establish source-level consistency, exact-version bytecode-anchor coverage, exclusion of unwanted workflows, and successful reassembly of the supplied APK tree. They do not replace installation and interaction testing on a device after producing a patch bundle with the real Morphe build dependencies.
+
+## Repository / release pipeline validation
+
+The repaired repository also passed these checks:
+
+- `.releaserc`, `package.json`, `package-lock.json`, `patches-bundle.json` and `patches-list.json` are present and parse as JSON where applicable.
+- `patches-bundle.json` uses the five-key Morphe source schema.
+- `patches-list.json` starts in the template-compatible `0.0.0`/empty state and is generated by Semantic Release.
+- `release.yml`, `open_pull_request.yml`, `build_pull_request.yml`, Dependabot and issue-template YAML parse successfully.
+- `gradlew` has Unix mode `755`, and both build/release workflows run `chmod +x gradlew` before invoking Gradle.
+- `generatePatchesList` has Gson on its runtime classpath.
+- `.releaserc` no longer invokes the removed `codegen` task.
+- the release workflow has `fetch-depth: 0` and write permissions required by Semantic Release.
+- project metadata falls back to `lootdev78/psylos-morphe-patches` outside GitHub Actions and uses `GITHUB_REPOSITORY` in Actions.
+
+Run the repository-only validation with:
+
+```bash
+python3 tools/validate_repo.py
+```

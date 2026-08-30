@@ -5,9 +5,10 @@ on:
   pull_request:
     branches:
       - dev
+      - main
 
 jobs:
-  release:
+  build:
     name: Build
     runs-on: ubuntu-latest
     steps:
@@ -17,14 +18,17 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v6.0.0
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: temurin
+          java-version: '21'
 
-      - name: Cache Gradle
-        uses: burrunan/gradle-cache-action@v3
-        
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Make Gradle wrapper executable
         run: chmod +x gradlew
+
+      - name: Validate repository structure
+        run: python3 tools/validate_repo.py
 
       - name: Build
         env:

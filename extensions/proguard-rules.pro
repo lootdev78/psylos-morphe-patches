@@ -7,6 +7,6 @@
 -keep class hoodles.morphe.** {
   *;
 }
--keep class com.google.** {
+-keep class psylos.morphe.** {
   *;
 }
