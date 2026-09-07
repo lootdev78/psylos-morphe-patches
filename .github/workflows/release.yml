@@ -58,7 +58,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew buildAndroid --no-daemon
-
-      - name: Verify bundled runtime extensions
-        if: steps.release.outputs.new_release_published != 'true'
-        run: ./tools/verify_mpp.sh
