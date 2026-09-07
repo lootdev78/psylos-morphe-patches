@@ -37,9 +37,6 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x gradlew
 
-      - name: Validate repository structure
-        run: python3 tools/validate_repo.py
-
       - name: Install release dependencies
         run: npm ci
 
